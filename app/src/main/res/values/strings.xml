@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">GameRecord</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_edit_person">Edit Person</string>
+    <string name="title_activity_edit_event">Edit Event</string>
+    <string name="title_activity_view_event">View Event</string>
+
+    <string name="app_slogon">Happy Together</string>
+    <string name="app_email_adress">z65251@gmail.com</string>
+
+    <string name="menu_record_event">Record Event</string>
+    <string name="menu_view_event">View Event</string>
+    <string name="menu_show_chart">View Chart</string>
+    <string name="menu_tools">Tools</string>
+    <string name="menu_communicate">Communicate</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_send">Send</string>
+
+    <string name="text_time">Time</string>
+    <string name="text_name">Name</string>
+    <string name="text_balance">Balance</string>
+    <string name="text_fee">Fee</string>
+    <string name="text_comments">Comments</string>
+    <string name="text_ismajong">Is Majong</string>
+    <string name="text_delete_info">Delete Info?</string>
+    <string name="text_yes">Yes</string>
+    <string name="text_no">No</string>
+    <string name="text_today">Today</string>
+    <string name="title_activity_view_chart">ViewChartActivity</string>
+    <string name="take_picture">take picture</string>
+    <string name="picture_preview">picture preview</string>
+    <string name="backup_database">Are you sure to back up database to sdcard dir?</string>
+    <string name="restore_database">Are you sure to restore database from sdcard dir?</string>
+
+</resources>
