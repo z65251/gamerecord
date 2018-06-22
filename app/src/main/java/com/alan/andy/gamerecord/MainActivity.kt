@@ -84,20 +84,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         //Log.d(LOG_TAG, "$requestCode $resultCode")
         when (requestCode) {
             REQUEST_ADD_PERSON -> {
                 if (resultCode == RESULT_OK) {
                     //add to list data and append to db
-                    addListData(getPersonRecordFromIntent(intent, false))
+                    addListData(getPersonRecordFromIntent(intent!!, false))
                 }
             }
 
             REQUEST_EDIT_PERSON -> {
                 if (resultCode == RESULT_OK) {
                     //update click info
-                    updateListData(getPersonRecordFromIntent(intent, true))
+                    updateListData(getPersonRecordFromIntent(intent!!, true))
                 }
             }
         }

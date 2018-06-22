@@ -67,20 +67,20 @@ class ViewEventActivity : AppCompatActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         //Log.d(LOG_TAG, "$requestCode $resultCode")
         when (requestCode) {
             REQUEST_ADD_EVENT -> {
                 if (resultCode == RESULT_OK) {
                     //add to list data and append to db
-                    addListData(getEventRecordFromIntent(intent, false))
+                    addListData(getEventRecordFromIntent(intent!!, false))
                 }
             }
 
             REQUEST_EDIT_EVENT -> {
                 if (resultCode == RESULT_OK) {
                     //update click info
-                    updateListData(getEventRecordFromIntent(intent, true))
+                    updateListData(getEventRecordFromIntent(intent!!, true))
                 }
             }
         }

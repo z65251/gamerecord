@@ -80,20 +80,20 @@ class EditEventActivity : AppCompatActivity() {
         super.onBackPressed()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
 
         when (requestCode) {
             TAKE_PHOTO -> {
                 var photo: Bitmap? = null
 
-                if (intent.data != null || intent.extras != null) { //防止没有返回结果
-                    val uri = intent.data
+                if (intent!!.data != null || intent!!.extras != null) { //防止没有返回结果
+                    val uri = intent!!.data
                     if (uri != null) {
                         photo = BitmapFactory.decodeFile(uri.path) //拿到图片
                     }
 
                     if (photo == null) {
-                        photo = intent.extras.get("data") as Bitmap
+                        photo = intent!!.extras.get("data") as Bitmap
                     }
                 }
 
