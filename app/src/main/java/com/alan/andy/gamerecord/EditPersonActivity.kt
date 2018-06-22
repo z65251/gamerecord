@@ -8,6 +8,9 @@ import kotlinx.android.synthetic.main.activity_edit_person.*
 import kotlinx.android.synthetic.main.content_edit_person.*
 import java.text.SimpleDateFormat
 import java.util.*
+import android.view.WindowManager
+
+
 
 class EditPersonActivity : AppCompatActivity() {
 

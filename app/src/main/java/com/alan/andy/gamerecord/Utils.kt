@@ -1,12 +1,10 @@
 package com.alan.andy.gamerecord
 
-import android.app.Activity
+
 import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
 import android.database.Cursor
 import android.database.Cursor.FIELD_TYPE_NULL
-import android.support.v4.content.ContextCompat.getColor
 
 /**
  * Created by z00325866 on 2018/2/22.

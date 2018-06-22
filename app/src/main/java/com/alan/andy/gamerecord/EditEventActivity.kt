@@ -2,7 +2,6 @@ package com.alan.andy.gamerecord
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 
 import kotlinx.android.synthetic.main.activity_edit_event.*
@@ -10,15 +9,9 @@ import kotlinx.android.synthetic.main.content_edit_event.*
 import java.text.SimpleDateFormat
 import java.util.*
 import android.widget.Toast
-import android.content.ClipData.newIntent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Environment
-import android.os.Environment.MEDIA_MOUNTED
-import android.graphics.drawable.BitmapDrawable
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileOutputStream
 
 
 class EditEventActivity : AppCompatActivity() {

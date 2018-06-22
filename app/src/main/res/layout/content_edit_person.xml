@@ -13,28 +13,14 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="end">
-
-            <TextView
-                android:id="@+id/textView_Time"
-                android:layout_width="300dp"
-                android:layout_height="30dp"
-                android:text="@string/text_time"
-                android:textSize="20sp" />
-
-            <ImageView
-                android:id="@+id/button_today"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@android:color/holo_orange_light"
-                android:contentDescription="@string/text_today"
-                app:srcCompat="@android:drawable/ic_menu_today" />
-        </LinearLayout>
+        <ImageView
+            android:id="@+id/button_today"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end"
+            android:background="@android:color/holo_orange_light"
+            android:contentDescription="@string/text_today"
+            app:srcCompat="@drawable/today" />
 
         <EditText
             android:id="@+id/editText_Time"
@@ -46,13 +32,6 @@
             android:hint="@string/text_time"
             android:autofillHints="@string/text_time" tools:targetApi="o" />
 
-        <TextView
-            android:id="@+id/textView_Name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/text_name"
-            android:textSize="20sp"/>
-
         <EditText
             android:id="@+id/editText_Name"
             android:layout_width="match_parent"
@@ -62,13 +41,6 @@
             android:hint="@string/text_name"
             android:autofillHints="@string/text_name" tools:targetApi="o" />
 
-        <TextView
-            android:id="@+id/textView_Balance"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/text_balance"
-            android:textSize="20sp"/>
-
         <EditText
             android:id="@+id/editText_Balance"
             android:layout_width="match_parent"
@@ -77,13 +49,6 @@
             android:textSize="20sp"
             android:hint="@string/text_balance"
             android:autofillHints="@string/text_balance" tools:targetApi="o" />
-
-        <TextView
-            android:id="@+id/textView_Comments"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/text_comments"
-            android:textSize="20sp"/>
 
         <EditText
             android:id="@+id/editText_Comments"

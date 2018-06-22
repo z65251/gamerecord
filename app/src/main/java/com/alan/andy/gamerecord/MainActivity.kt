@@ -16,11 +16,8 @@ import android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
 import android.net.Uri
 import android.support.v7.app.AlertDialog
 import com.alan.andy.gamerecord.RecordDbHelper.Companion.DATABASE_NAME
-import java.io.File
-import java.text.SimpleDateFormat
 import java.util.*
-import android.support.v4.content.FileProvider.getUriForFile
-import android.util.Log
+
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
