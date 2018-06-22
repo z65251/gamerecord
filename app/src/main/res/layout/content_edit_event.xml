@@ -15,10 +15,10 @@
 
         <ImageView
             android:id="@+id/button_today"
-            android:layout_width="96dp"
-            android:layout_height="48dp"
+            android:layout_width="48dp"
+            android:layout_height="24dp"
             android:layout_gravity="end"
-            android:background="@android:color/holo_orange_light"
+            android:background="@android:color/holo_orange_dark"
             android:contentDescription="@string/text_today"
             app:srcCompat="@drawable/today" />
 

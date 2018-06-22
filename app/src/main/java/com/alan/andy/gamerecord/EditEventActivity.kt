@@ -26,7 +26,7 @@ class EditEventActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_event)
-        setSupportActionBar(toolbar)
+        //setSupportActionBar(toolbar)
 
         fab.setOnClickListener {  _ ->
             //only when save is ok: which means info have been edited
@@ -79,14 +79,14 @@ class EditEventActivity : AppCompatActivity() {
             TAKE_PHOTO -> {
                 var photo: Bitmap? = null
 
-                if (intent!!.data != null || intent!!.extras != null) { //防止没有返回结果
-                    val uri = intent!!.data
+                if (intent!!.data != null || intent.extras != null) { //防止没有返回结果
+                    val uri = intent.data
                     if (uri != null) {
                         photo = BitmapFactory.decodeFile(uri.path) //拿到图片
                     }
 
                     if (photo == null) {
-                        photo = intent!!.extras.get("data") as Bitmap
+                        photo = intent.extras.get("data") as Bitmap
                     }
                 }
 

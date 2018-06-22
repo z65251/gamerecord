@@ -27,7 +27,7 @@ class ViewEventActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view_event)
 
-        toolbar.setTitle(R.string.title_activity_view_event)
+        //toolbar.setTitle(R.string.title_activity_view_event)
 
         fab.setOnClickListener{ _ ->
             val record = EventInfo()
@@ -55,10 +55,9 @@ class ViewEventActivity : AppCompatActivity() {
             AlertDialog.Builder(this)
                     //.setIcon(R.id.icon)
                     .setTitle(R.string.text_delete_info)
-                    .setPositiveButton(R.string.text_yes,
-                            DialogInterface.OnClickListener { _, _ ->
-                                deleteListData(position)
-                            })
+                    .setPositiveButton(R.string.text_yes) { _, _ ->
+                        deleteListData(position)
+                    }
                     .setNegativeButton(R.string.text_no, null).create()
                     .show()
 

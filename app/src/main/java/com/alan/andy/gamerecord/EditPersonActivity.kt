@@ -19,7 +19,7 @@ class EditPersonActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_person)
-        setSupportActionBar(toolbar)
+        //setSupportActionBar(toolbar)
 
         fab.setOnClickListener { _ ->
             //only when save is ok: which means info have been edited

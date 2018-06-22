@@ -22,7 +22,7 @@ class ViewChartActivity : AppCompatActivity() {
         setContentView(R.layout.activity_view_chart)
         //setSupportActionBar(toolbar)
 
-        toolbar.setTitle(R.string.menu_show_chart)
+        //toolbar.setTitle(R.string.menu_show_chart)
 
         //fill data
         setData(line_chart)

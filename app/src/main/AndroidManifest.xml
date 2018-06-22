@@ -21,21 +21,19 @@
         </activity>
         <activity
             android:name=".EditPersonActivity"
-            android:label="@string/title_activity_edit_person"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="@string/title_activity_edit_person" />
         <activity
             android:name=".ViewEventActivity"
-            android:label="@string/title_activity_view_event"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="@string/title_activity_view_event" />
         <activity
             android:name=".EditEventActivity"
-            android:label="@string/title_activity_edit_event"
-            android:theme="@style/AppTheme.NoActionBar" />
-
+            android:label="@string/title_activity_edit_event" />
         <activity
             android:name=".ViewChartActivity"
-            android:label="@string/title_activity_view_chart"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="@string/title_activity_view_chart" />
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/action_settings"/>
 
         <provider
             android:name="android.support.v4.content.FileProvider"

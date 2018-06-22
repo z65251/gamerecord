@@ -71,10 +71,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             AlertDialog.Builder(this)
                     //.setIcon(R.id.icon)
                     .setTitle(R.string.text_delete_info)
-                    .setPositiveButton(R.string.text_yes,
-                            DialogInterface.OnClickListener { _, _ ->
-                                deleteListData(position)
-                            })
+                    .setPositiveButton(R.string.text_yes) { _, _ ->
+                        deleteListData(position)
+                    }
                     .setNegativeButton(R.string.text_no, null).create()
                     .show()
             true
@@ -118,9 +117,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        when (item.itemId) {
-            R.id.action_settings -> return true
-            else -> return super.onOptionsItemSelected(item)
+        return when (item.itemId) {
+            R.id.action_settings -> {
+                moveToSettings()
+                true
+            }
+
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -136,27 +139,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_manage -> {
                 syncDatabase()
             }
-            R.id.nav_share -> {
-
-                AlertDialog.Builder(this)
-                        //.setIcon(R.id.icon)
-                        .setTitle(R.string.restore_database)
-                        .setPositiveButton(R.string.text_yes,
-                                DialogInterface.OnClickListener { _, _ ->
-                                    backupRestorDbFile(false)
-                                })
-                        .setNegativeButton(R.string.text_no, null).create()
-                        .show()
-            }
+            R.id.nav_share -> AlertDialog.Builder(this)
+                    //.setIcon(R.id.icon)
+                    .setTitle(R.string.restore_database)
+                    .setPositiveButton(R.string.text_yes) { _, _ ->
+                        backupRestorDbFile(false)
+                    }
+                    .setNegativeButton(R.string.text_no, null).create()
+                    .show()
             R.id.nav_send -> {
 
                 AlertDialog.Builder(this)
                         //.setIcon(R.id.icon)
                         .setTitle(R.string.backup_database)
-                        .setPositiveButton(R.string.text_yes,
-                                DialogInterface.OnClickListener { _, _ ->
-                                    backupRestorDbFile(true)
-                                })
+                        .setPositiveButton(R.string.text_yes) { _, _ ->
+                            backupRestorDbFile(true)
+                        }
                         .setNegativeButton(R.string.text_no, null).create()
                         .show()
                 //val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd_HH:mm:ss")// HH:mm:ss
@@ -312,6 +310,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val intent = Intent()
 
         intent.setClass(this, ViewChartActivity::class.java)
+
+        startActivity(intent)
+    }
+
+    private fun moveToSettings() {
+        val intent = Intent()
+
+        intent.setClass(this, SettingsActivity::class.java)
 
         startActivity(intent)
     }
