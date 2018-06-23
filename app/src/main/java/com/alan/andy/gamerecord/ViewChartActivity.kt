@@ -3,7 +3,6 @@ package com.alan.andy.gamerecord
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 
-import kotlinx.android.synthetic.main.activity_view_chart.*
 import kotlinx.android.synthetic.main.content_view_chart.*
 
 import java.util.ArrayList
@@ -20,9 +19,6 @@ class ViewChartActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view_chart)
-        //setSupportActionBar(toolbar)
-
-        //toolbar.setTitle(R.string.menu_show_chart)
 
         //fill data
         setData(line_chart)
@@ -47,68 +43,6 @@ class ViewChartActivity : AppCompatActivity() {
         line_chart.animateX(2500)
     }
 
-    private fun getNameList(): ArrayList<String> {
-        val nameList = ArrayList<String>()
-
-        val db = RecordDbHelper(this).readableDatabase
-
-        val cursor = db.query(true,
-                TABLE_NAME_PERSON, // The table to query
-                arrayOf(COLUMN_NAME), // The columns to return
-                null,
-                null,
-                null,
-                null,
-                null,
-                null)
-
-        if (cursor.moveToFirst()) {
-            while (!cursor.isAfterLast) {
-
-                val name = cursor.getString(cursor.getColumnIndex(COLUMN_NAME))
-                nameList.add(name)
-
-                cursor.moveToNext()
-            }
-        }
-
-        cursor.close()
-        db.close()
-
-        return nameList
-    }
-
-    private fun getTimeList(): ArrayList<String> {
-        val timeList = ArrayList<String>()
-
-        val db = RecordDbHelper(this).readableDatabase
-
-        val cursor = db.query(true,
-                TABLE_NAME_PERSON, // The table to query
-                arrayOf(COLUMN_TIME), // The columns to return
-                null,
-                null,
-                null,
-                null,
-                null,
-                null)
-
-        if (cursor.moveToFirst()) {
-            while (!cursor.isAfterLast) {
-
-                val time = cursor.getString(cursor.getColumnIndex(COLUMN_TIME))
-                timeList.add(time)
-
-                cursor.moveToNext()
-            }
-        }
-
-        cursor.close()
-        db.close()
-
-        return timeList
-    }
-
     private fun getIndexByTime(timeList: ArrayList<String>, time: String): Int {
         for (i in 0 until timeList.size) if (time == timeList[i]) {
             return i
@@ -122,8 +56,8 @@ class ViewChartActivity : AppCompatActivity() {
         val db = RecordDbHelper(this).readableDatabase
 
         //get name list and time list firstly
-        val nameList = getNameList()
-        val timeList = getTimeList()
+        val nameList = getNameList(this)
+        val timeList = getTimeList(this)
 
         val dataSets = ArrayList<ILineDataSet>()
 

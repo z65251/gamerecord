@@ -2,9 +2,15 @@ package com.alan.andy.gamerecord
 
 
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.database.Cursor
 import android.database.Cursor.FIELD_TYPE_NULL
+import android.graphics.Bitmap
+import android.util.Log
+import android.graphics.BitmapFactory
+import java.io.*
+
 
 /**
  * Created by z00325866 on 2018/2/22.
@@ -36,7 +42,7 @@ fun setIntentExtraFromPerson(intent: Intent, person: PersonInfo) {
     intent.putExtra(COLUMN_COMMENTS, person.comments)
 }
 
-fun setMapFromCursorForPerson(map: HashMap<String, Any>, cursor: Cursor) {
+fun setMapFromCursorForPerson(context: Context, map: HashMap<String, Any>, cursor: Cursor) {
     /* read all the readable info from table
     |----------------------------------------------------------|
     |_id(int)|time(text)|name(text)|balance(int)|comments(text)|
@@ -52,6 +58,13 @@ fun setMapFromCursorForPerson(map: HashMap<String, Any>, cursor: Cursor) {
 
     //get default face img by name
     map["face"] = getColorIdFromName(map[COLUMN_NAME].toString())
+    val bitmap = readPlayerBitmap(context, map[COLUMN_NAME].toString())
+    if (bitmap != null) {
+        map["pic"] = bitmap
+    } else {
+        map["pic"] = "null"
+    }
+    //map["pic"] = readPlayerBitmap(context, map[COLUMN_NAME].toString()) as Any?
 }
 
 fun createNewPersonValues(person: PersonInfo): ContentValues {
@@ -194,4 +207,173 @@ fun getColorIdFromName(name: String): Int {
     }
 
     return colorId
+}
+
+fun getNameList(context: Context): java.util.ArrayList<String> {
+    val nameList = java.util.ArrayList<String>()
+
+    val db = RecordDbHelper(context).readableDatabase
+
+    val cursor = db.query(true,
+            TABLE_NAME_PERSON, // The table to query
+            arrayOf(COLUMN_NAME), // The columns to return
+            null,
+            null,
+            null,
+            null,
+            null,
+            null)
+
+    if (cursor.moveToFirst()) {
+        while (!cursor.isAfterLast) {
+
+            val name = cursor.getString(cursor.getColumnIndex(COLUMN_NAME))
+            nameList.add(name)
+
+            cursor.moveToNext()
+        }
+    }
+
+    cursor.close()
+    db.close()
+
+    return nameList
+}
+
+fun getTimeList(context: Context): ArrayList<String> {
+    val timeList = ArrayList<String>()
+
+    val db = RecordDbHelper(context).readableDatabase
+
+    val cursor = db.query(true,
+            TABLE_NAME_PERSON, // The table to query
+            arrayOf(COLUMN_TIME), // The columns to return
+            null,
+            null,
+            null,
+            null,
+            null,
+            null)
+
+    if (cursor.moveToFirst()) {
+        while (!cursor.isAfterLast) {
+
+            val time = cursor.getString(cursor.getColumnIndex(COLUMN_TIME))
+            timeList.add(time)
+
+            cursor.moveToNext()
+        }
+    }
+
+    cursor.close()
+    db.close()
+
+    return timeList
+}
+
+fun savePlayerBitmap(context: Context, playername: String, bitmap: Bitmap): Int {
+
+    val filepath = context.filesDir.absolutePath + "/" + playername + ".png"
+
+    val file = File(filepath)
+    try {
+        file.createNewFile()
+    } catch (e: IOException) {
+        Log.w(LOG_TAG, "create file failed：" + e.toString())
+    }
+
+    var fOut: FileOutputStream? = null
+    try {
+        fOut = FileOutputStream(file)
+    } catch (e: FileNotFoundException) {
+        Log.w(LOG_TAG, "out stream failed：" + e.toString())
+    }
+
+    try {
+        bitmap.compress(Bitmap.CompressFormat.PNG, 80, fOut)
+    } catch (e: Exception) {
+        return -1
+    }
+
+    try {
+        fOut!!.flush()
+    } catch (e: IOException) {
+        Log.w(LOG_TAG, "flush file failed：" + e.toString())
+    }
+
+    try {
+        fOut!!.close()
+    } catch (e: IOException) {
+        Log.w(LOG_TAG, "close file failed：" + e.toString())
+    }
+
+    return 0
+}
+
+fun readPlayerBitmap(context: Context, playername: String): Bitmap? {
+
+    val filepath = context.filesDir.absolutePath + "/" + playername + ".png"
+
+    var fis: FileInputStream? = null
+    try {
+        fis = FileInputStream(filepath)
+    } catch (e: FileNotFoundException) {
+        Log.w(LOG_TAG, "file $filepath read failed failed：" + e.toString())
+    }
+
+    if (fis != null) {
+        return BitmapFactory.decodeStream(fis)
+    } else {
+        return null
+    }
+}
+
+fun getFitInSampleSize(reqWidth: Int, reqHeight: Int, options: BitmapFactory.Options): Int {
+    var inSampleSize = 1
+
+    if (options.outWidth > reqWidth || options.outHeight > reqHeight) {
+        val widthRatio = Math.round(options.outWidth.toFloat() / reqWidth.toFloat())
+        val heightRatio = Math.round(options.outHeight.toFloat() / reqHeight.toFloat())
+        inSampleSize = Math.min(widthRatio, heightRatio)
+    }
+
+    return inSampleSize
+}
+
+@Throws(Exception::class)
+fun getFitSampleBitmap(inputStream: InputStream, width: Int, height: Int): Bitmap? {
+    val options = BitmapFactory.Options()
+    options.inJustDecodeBounds = true
+
+    val bytes = readStream(inputStream) ?: return null
+
+    //BitmapFactory.decodeStream(inputStream, null, options);
+    BitmapFactory.decodeByteArray(bytes, 0, bytes.size, options)
+
+    options.inSampleSize = getFitInSampleSize(width, height, options)
+    options.inJustDecodeBounds = false
+    //return BitmapFactory.decodeStream(inputStream, null, options);
+
+    return BitmapFactory.decodeByteArray(bytes, 0, bytes.size, options)
+}
+
+@Throws(Exception::class)
+fun readStream(inStream: InputStream): ByteArray? {
+    val outStream = ByteArrayOutputStream()
+    val buffer = ByteArray(10*1024*1024)
+    var len = 0
+
+    len = inStream.read(buffer)
+    //TODO simple way use 10MB
+    if (len > 10*1024*1024) {
+        inStream.close()
+        return null
+    }
+
+    outStream.write(buffer, 0, len)
+
+    outStream.close()
+    inStream.close()
+
+    return outStream.toByteArray()
 }

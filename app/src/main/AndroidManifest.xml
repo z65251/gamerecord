@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.alan.andy.gamerecord">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -33,7 +35,10 @@
             android:label="@string/title_activity_view_chart" />
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/action_settings"/>
+            android:label="@string/action_settings" />
+        <activity
+            android:name=".PlayersSettingActivity"
+            android:label="@string/settings_players"/>
 
         <provider
             android:name="android.support.v4.content.FileProvider"

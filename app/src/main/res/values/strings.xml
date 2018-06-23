@@ -30,10 +30,17 @@
     <string name="text_yes">Yes</string>
     <string name="text_no">No</string>
     <string name="text_today">Today</string>
-    <string name="title_activity_view_chart">ViewChartActivity</string>
+    <string name="title_activity_view_chart">ViewChart</string>
     <string name="take_picture">take picture</string>
     <string name="picture_preview">picture preview</string>
     <string name="backup_database">Are you sure to back up database to sdcard dir?</string>
     <string name="restore_database">Are you sure to restore database from sdcard dir?</string>
 
+    <string name="settings_players">players settings</string>
+    <string name="settings_backup">backup datas</string>
+    <string name="settings_restore">restore datas</string>
+
+    <string name="player_picture">player picture</string>
+    <string name="choose_gallery">choose gallery</string>
+    <string name="choose_camera">choose camera</string>
 </resources>

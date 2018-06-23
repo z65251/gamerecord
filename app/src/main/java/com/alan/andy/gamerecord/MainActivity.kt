@@ -1,5 +1,6 @@
 package com.alan.andy.gamerecord
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
@@ -7,14 +8,18 @@ import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.*
-import android.widget.SimpleAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import android.content.DialogInterface
 import android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
+import android.graphics.Bitmap
 import android.net.Uri
 import android.support.v7.app.AlertDialog
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.util.Log
+import android.widget.ImageView
+import android.widget.TextView
 import com.alan.andy.gamerecord.RecordDbHelper.Companion.DATABASE_NAME
 import java.util.*
 
@@ -23,11 +28,8 @@ import java.util.*
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     //members below here
-    private val REQUEST_ADD_PERSON = 100
-    private val REQUEST_EDIT_PERSON = 101
-
     private lateinit var mListData: ArrayList<HashMap<String, Any>>
-    private lateinit var mListSimpleAdapter: SimpleAdapter
+    private lateinit var mAdapter: MainRecyclerViewAdapter
     private lateinit var mDbHelper: RecordDbHelper
 
     private var mClickedIndex: Int = -1
@@ -49,35 +51,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         nav_view.setNavigationItemSelectedListener(this)
 
-        //set list adapter for the main list
-        val mapKey = arrayOf("face", COLUMN_TIME, COLUMN_NAME, COLUMN_BALANCE, COLUMN_FEE, COLUMN_COMMENTS)
-        val ids = intArrayOf(R.id.face, R.id.time, R.id.name, R.id.balance, R.id.fee, R.id.comments)
-
         mDbHelper = RecordDbHelper(this)
         mListData = getListData()
-        mListSimpleAdapter = SimpleAdapter(this, mListData, R.layout.list_item_main, mapKey, ids)
 
-        main_list.adapter = mListSimpleAdapter
+        //set layout manager and adpter
+        mAdapter = MainRecyclerViewAdapter(this)
 
-        //set list item click listener, move to edit activity with the text of the item
-        main_list.setOnItemClickListener { _, _, position, _ ->
-            moveToEditPerson(getPersonFromListData(mListData, position), false)
-
-            mClickedIndex = position
-        }
-
-        main_list.setOnItemLongClickListener {_, _, position, _ ->
-            //Toast.makeText(this, "Position Long Clicked:"+" "+position, Toast.LENGTH_SHORT).show()
-            AlertDialog.Builder(this)
-                    //.setIcon(R.id.icon)
-                    .setTitle(R.string.text_delete_info)
-                    .setPositiveButton(R.string.text_yes) { _, _ ->
-                        deleteListData(position)
-                    }
-                    .setNegativeButton(R.string.text_no, null).create()
-                    .show()
-            true
-        }
+        main_list_recycler_view.layoutManager = LinearLayoutManager(this)
+        main_list_recycler_view.adapter = mAdapter
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
@@ -133,22 +114,27 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_view_event -> {
                 moveToViewEvent()
             }
+
             R.id.nav_show_chart -> {
                 moveToViewChart()
             }
+
             R.id.nav_manage -> {
                 syncDatabase()
             }
-            R.id.nav_share -> AlertDialog.Builder(this)
-                    //.setIcon(R.id.icon)
-                    .setTitle(R.string.restore_database)
-                    .setPositiveButton(R.string.text_yes) { _, _ ->
-                        backupRestorDbFile(false)
-                    }
-                    .setNegativeButton(R.string.text_no, null).create()
-                    .show()
-            R.id.nav_send -> {
 
+            R.id.nav_share -> {
+                AlertDialog.Builder(this)
+                        //.setIcon(R.id.icon)
+                        .setTitle(R.string.restore_database)
+                        .setPositiveButton(R.string.text_yes) { _, _ ->
+                            backupRestorDbFile(false)
+                        }
+                        .setNegativeButton(R.string.text_no, null).create()
+                        .show()
+            }
+
+            R.id.nav_send -> {
                 AlertDialog.Builder(this)
                         //.setIcon(R.id.icon)
                         .setTitle(R.string.backup_database)
@@ -175,6 +161,68 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
+    inner class MainRecyclerViewAdapter(context: Context) : RecyclerView.Adapter<MainRecyclerViewAdapter.MainViewHolder>() {
+        private val mLayoutInflater: LayoutInflater = LayoutInflater.from(context)
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
+            return MainViewHolder(mLayoutInflater.inflate(R.layout.item_main, parent, false))
+        }
+
+        override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
+
+            holder.mNameTextView.text = mListData[position][COLUMN_NAME].toString()
+            holder.mTimeTextView.text = mListData[position][COLUMN_TIME].toString()
+            holder.mBalanceTextView.text = mListData[position][COLUMN_BALANCE].toString()
+            //holder.mFeeTextView.text = mListData[position][COLUMN_FEE].toString()
+            holder.mCommentView.text = mListData[position][COLUMN_COMMENTS].toString()
+
+            if (mListData[position]["pic"] != "null") {
+                holder.mFaceImageView.clearColorFilter()
+                holder.mFaceImageView.setImageBitmap(mListData[position]["pic"] as Bitmap)
+            } else {
+                holder.mFaceImageView.setColorFilter(mListData[position]["face"] as Int)
+            }
+        }
+
+        override fun getItemCount(): Int {
+            return mListData.size
+        }
+
+        inner class MainViewHolder internal constructor(view: View) : RecyclerView.ViewHolder(view) {
+
+            var mFaceImageView: ImageView = view.findViewById(R.id.face)
+            var mNameTextView: TextView = view.findViewById(R.id.name)
+            var mTimeTextView: TextView = view.findViewById(R.id.time)
+            var mBalanceTextView: TextView = view.findViewById(R.id.balance)
+            //var mFeeTextView: TextView = view.findViewById(R.id.fee)
+            var mCommentView: TextView = view.findViewById(R.id.comments)
+
+            init {
+                view.setOnClickListener { _ ->
+                    Log.d("MainViewHolder", "onClick--> position = $layoutPosition")
+
+                    moveToEditPerson(getPersonFromListData(mListData, layoutPosition), false)
+
+                    mClickedIndex = layoutPosition
+                }
+
+                view.setOnLongClickListener { _ ->
+                    Log.d("MainViewHolder", "onLongClick--> position = $layoutPosition")
+                    AlertDialog.Builder(this@MainActivity)
+                            //.setIcon(R.id.icon)
+                            .setTitle(R.string.text_delete_info)
+                            .setPositiveButton(R.string.text_yes) { _, _ ->
+                                deleteListData(layoutPosition)
+                            }
+                            .setNegativeButton(R.string.text_no, null).create()
+                            .show()
+                    true
+                }
+
+            }
+        }
+    }
+
     //internal fun for main
     private fun getListData(): ArrayList<HashMap<String, Any>> {
         val list = ArrayList<HashMap<String, Any>>()
@@ -194,7 +242,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
            while (!c.isAfterLast) {
 
                val map: HashMap<String, Any> = HashMap()
-               setMapFromCursorForPerson(map, c)
+               setMapFromCursorForPerson(applicationContext, map, c)
 
                list.add(map)
 
@@ -223,7 +271,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         person.id = index.toInt()
         setMapFromPersonValue(map, person)
         mListData.add(map)
-        mListSimpleAdapter.notifyDataSetChanged()
+        mAdapter.notifyDataSetChanged()
     }
 
     private fun updateListData(person: PersonInfo) {
@@ -240,7 +288,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         //update list data and view
         setMapFromPersonValue(map, person)
-        mListSimpleAdapter.notifyDataSetChanged()
+        mAdapter.notifyDataSetChanged()
     }
 
     private fun deleteListData(index: Int) {
@@ -257,7 +305,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         //update list data and view
         mListData.removeAt(index)
-        mListSimpleAdapter.notifyDataSetChanged()
+        mAdapter.notifyDataSetChanged()
     }
 
     private fun composeEmail(addresses: Array<String>, subject: String, attachment: Uri) {
@@ -324,6 +372,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun syncDatabase() {
 
+    }
+
+    companion object {
+        const val REQUEST_ADD_PERSON = 100
+        const val REQUEST_EDIT_PERSON = 101
     }
 }
 

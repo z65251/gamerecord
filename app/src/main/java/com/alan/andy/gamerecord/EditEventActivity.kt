@@ -16,17 +16,13 @@ import android.os.Environment
 
 class EditEventActivity : AppCompatActivity() {
 
-    private val TAKE_PHOTO = 100
-
-    lateinit var event: EventInfo
+    private lateinit var event: EventInfo
     private var image: String ?= null
-
     //lateinit var isMajong: Boolean
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_event)
-        //setSupportActionBar(toolbar)
 
         fab.setOnClickListener {  _ ->
             //only when save is ok: which means info have been edited
@@ -49,6 +45,7 @@ class EditEventActivity : AppCompatActivity() {
 
             image_preview.setImageBitmap(bitmap)
         }
+
         /*switch_IsMajong.setOnCheckedChangeListener{_, isChecked ->
             isMajong = isChecked
         }*/
@@ -154,9 +151,7 @@ class EditEventActivity : AppCompatActivity() {
     }
 
     private fun getPhoto() {
-        /**
-         * 在启动拍照之前先判断一下sdcard是否可用
-         */
+
         val state = Environment.getExternalStorageState()
         if (state == Environment.MEDIA_MOUNTED) {
             val intent = Intent("android.media.action.IMAGE_CAPTURE")
@@ -164,5 +159,9 @@ class EditEventActivity : AppCompatActivity() {
         } else {
             Toast.makeText(this, "sdcard not exist", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    companion object {
+        const val TAKE_PHOTO = 100
     }
 }

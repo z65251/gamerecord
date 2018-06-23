@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <ImageView
+        <ImageButton
             android:id="@+id/button_today"
             android:layout_width="48dp"
             android:layout_height="24dp"
