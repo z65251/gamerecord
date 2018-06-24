@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "245049828373",
+    "firebase_url": "https://my-android-project-gamerecord.firebaseio.com",
+    "project_id": "my-android-project-gamerecord",
+    "storage_bucket": "my-android-project-gamerecord.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:245049828373:android:311c86da38699a9d",
+        "android_client_info": {
+          "package_name": "com.alan.andy.gamerecord"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "245049828373-c8g8eh3lcuij2stln1v82p1i3v450jqn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDv-ouc-XhNdkqkS1wvl4LZGCHBlfkl3nI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

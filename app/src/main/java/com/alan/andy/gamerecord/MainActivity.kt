@@ -12,7 +12,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
-import android.graphics.Bitmap
 import android.net.Uri
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
@@ -120,29 +119,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
             R.id.nav_manage -> {
-                syncDatabase()
+
             }
 
             R.id.nav_share -> {
-                AlertDialog.Builder(this)
-                        //.setIcon(R.id.icon)
-                        .setTitle(R.string.restore_database)
-                        .setPositiveButton(R.string.text_yes) { _, _ ->
-                            backupRestorDbFile(false)
-                        }
-                        .setNegativeButton(R.string.text_no, null).create()
-                        .show()
+
             }
 
             R.id.nav_send -> {
-                AlertDialog.Builder(this)
-                        //.setIcon(R.id.icon)
-                        .setTitle(R.string.backup_database)
-                        .setPositiveButton(R.string.text_yes) { _, _ ->
-                            backupRestorDbFile(true)
-                        }
-                        .setNegativeButton(R.string.text_no, null).create()
-                        .show()
+
                 //val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd_HH:mm:ss")// HH:mm:ss
                 //val date = Date(System.currentTimeMillis())
 
@@ -321,17 +306,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    private fun backupRestorDbFile(isBackup: Boolean) {
-        val dbFile = applicationContext.getDatabasePath(DATABASE_NAME)
-        val bkFile = applicationContext.getExternalFilesDir(DATABASE_NAME)
-
-        if (isBackup) {
-            dbFile.copyTo(bkFile, true)
-        } else {
-            bkFile.copyTo(dbFile, true)
-        }
-    }
-
     private fun moveToEditPerson(person: PersonInfo, isAdd: Boolean) {
         val intent = Intent()
 
@@ -368,10 +342,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         intent.setClass(this, SettingsActivity::class.java)
 
         startActivity(intent)
-    }
-
-    private fun syncDatabase() {
-
     }
 
     companion object {

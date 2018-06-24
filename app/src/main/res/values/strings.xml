@@ -33,12 +33,16 @@
     <string name="title_activity_view_chart">ViewChart</string>
     <string name="take_picture">take picture</string>
     <string name="picture_preview">picture preview</string>
-    <string name="backup_database">Are you sure to back up database to sdcard dir?</string>
-    <string name="restore_database">Are you sure to restore database from sdcard dir?</string>
+    <string name="backup_database_sdcard">Are you sure to back up database to sdcard dir?</string>
+    <string name="restore_database_sdcard">Are you sure to restore database from sdcard dir?</string>
+    <string name="backup_database_cloud">Are you sure to back up database to cloud?</string>
+    <string name="restore_database_cloud">Are you sure to restore database from cloud?</string>
 
     <string name="settings_players">players settings</string>
-    <string name="settings_backup">backup datas</string>
-    <string name="settings_restore">restore datas</string>
+    <string name="settings_backup_cloud">backup data to cloud</string>
+    <string name="settings_restore_cloud">restore data from cloud</string>
+    <string name="settings_backup_sd">backup data to sdcard</string>
+    <string name="settings_restore_sd">restore data from sdcard</string>
 
     <string name="player_picture">player picture</string>
     <string name="choose_gallery">choose gallery</string>
