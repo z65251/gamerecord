@@ -1,6 +1,8 @@
 package com.alan.andy.gamerecord
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 
@@ -8,16 +10,18 @@ import kotlinx.android.synthetic.main.activity_edit_event.*
 import kotlinx.android.synthetic.main.content_edit_event.*
 import java.text.SimpleDateFormat
 import java.util.*
-import android.widget.Toast
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.os.Environment
+import android.provider.MediaStore
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
+import android.widget.Toast
 
 
 class EditEventActivity : AppCompatActivity() {
 
-    private lateinit var event: EventInfo
-    private var image: String ?= null
+    private lateinit var mEvent: EventInfo
+    private var mBitmap: Bitmap? = null
+    //private var image: String ?= null
     //lateinit var isMajong: Boolean
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,17 +35,17 @@ class EditEventActivity : AppCompatActivity() {
             }
         }
 
-        event = getEventRecordFromIntent(intent, true)
+        mEvent = getEventRecordFromIntent(intent, true)
 
-        editText_Time.setText(event.time.toCharArray(), 0, event.time.length)
-        editText_Fee.setText(event.fee.toCharArray(), 0, event.fee.length)
-        editText_Comments.setText(event.comments.toCharArray(), 0, event.comments.length)
+        editText_Time.setText(mEvent.time.toCharArray(), 0, mEvent.time.length)
+        editText_Fee.setText(mEvent.fee.toCharArray(), 0, mEvent.fee.length)
+        editText_Comments.setText(mEvent.comments.toCharArray(), 0, mEvent.comments.length)
 
-        switch_IsMajong.isChecked = event.gametype == "1"
+        switch_IsMajong.isChecked = mEvent.gametype == "1"
 
 
-        if (event.photo != "0" && event.photo != "") {
-            val bitmap = BitmapFactory.decodeFile(event.photo)
+        if (mEvent.photo != "0" && mEvent.photo != "") {
+            val bitmap = readPlayerEventBitmap(applicationContext, mEvent.photo)
 
             image_preview.setImageBitmap(bitmap)
         }
@@ -60,8 +64,21 @@ class EditEventActivity : AppCompatActivity() {
         }
 
         //set camera button click handler
-        button_camera.setOnClickListener {_ ->
-            getPhoto()
+        button_choose_camera.setOnClickListener {_ ->
+            chooseCamera()
+        }
+
+        button_choose_gallery.setOnClickListener{_ ->
+            if (ContextCompat.checkSelfPermission(this@EditEventActivity, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED)
+            {
+                ActivityCompat.requestPermissions(this@EditEventActivity,
+                        arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                        PERMISSIONS_REQUEST_READ_STORAGE);
+
+            }else {
+                choosePhoto()
+            }
         }
     }
 
@@ -70,36 +87,52 @@ class EditEventActivity : AppCompatActivity() {
         super.onBackPressed()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
 
-        when (requestCode) {
-            TAKE_PHOTO -> {
-                var photo: Bitmap? = null
+        if (requestCode == PERMISSIONS_REQUEST_READ_STORAGE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                choosePhoto()
+            } else {
+                // Permission Denied
+                Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
+            }
+        }
 
-                if (intent!!.data != null || intent.extras != null) { //防止没有返回结果
-                    val uri = intent.data
-                    if (uri != null) {
-                        photo = BitmapFactory.decodeFile(uri.path) //拿到图片
-                    }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
 
-                    if (photo == null) {
-                        photo = intent.extras.get("data") as Bitmap
+    override fun onActivityResult(req: Int, res: Int, intent: Intent?) {
+
+        when (req) {
+            REQUEST_CODE_PICK_IMAGE -> {
+                if (res == RESULT_OK) {
+
+                    val uri = intent?.data
+
+                    //val bit = BitmapFactory.decodeStream(contentResolver.openInputStream(uri))
+                    val bitmap = getFitSampleBitmap(contentResolver.openInputStream(uri), 320, 320)
+                    if (bitmap !=  null) {
+                        image_preview.setImageBitmap(bitmap)
+                        mBitmap = bitmap
+
+                        //save the picture to file
+                        //savePlayerEventBitmap(applicationContext, mPlayerInfoList[mCurrentClickPos].name, bitmap)
                     }
                 }
+            }
 
-                if (photo != null) {
-                    image_preview.setImageBitmap(photo)
+            REQUEST_CODE_TAKE_IMAGE -> {
+                if (res == RESULT_OK) {
 
-                    //val name = "event_" + System.currentTimeMillis() + ".png"
-                    //val path = getExternalFilesDir(name).absolutePath.toString()
+                    val bundle = intent?.extras
+                    val bitmap = bundle?.get("data") as Bitmap?
+                    if (bitmap != null) {
+                        image_preview.setImageBitmap(bitmap)
+                        mBitmap = bitmap
 
-                    //val fos = openFileOutput(path, MODE_PRIVATE)
-                    //val fos = FileOutputStream(File(path), false)
-                    //val fos = applicationContext.openFileOutput(path, MODE_PRIVATE)
-
-                    //photo.compress(Bitmap.CompressFormat.PNG, 100, fos)
-
-                    //image = applicationContext.getExternalFilesDir(name).path
+                        //save the picture to file
+                        //savePlayerEventBitmap(applicationContext, mPlayerInfoList[mCurrentClickPos].name, bitmap)
+                    }
                 }
             }
         }
@@ -118,26 +151,32 @@ class EditEventActivity : AppCompatActivity() {
             //only when the text are not empty, otherwise do nothing
             if (time.isNotEmpty() || fee.isNotEmpty() || comments.isNotEmpty()) {
                 //set all info into intent
-                event.time = time
-                event.fee = fee
-                event.comments = comments
+                mEvent.time = time
+                mEvent.fee = fee
+                mEvent.comments = comments
 
                 if (switch_IsMajong.isChecked) {
-                    event.gametype = "1"
+                    mEvent.gametype = "1"
                 } else {
-                    event.gametype = "0"
+                    mEvent.gametype = "0"
                 }
 
-                if (image != null) {
-                    event.photo = image as String
-                } else {
-                    event.photo = "0"
+                mEvent.photo = "0"
+                if (mBitmap != null) {
+                    val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd_HH:mm:ss")// HH:mm:ss
+                    val date = Date(System.currentTimeMillis())
+                    val name = "GameRecord_event_" + simpleDateFormat.format(date)
+
+                    val res = savePlayerEventBitmap(applicationContext, name, mBitmap as Bitmap)
+                    if (res == 0) {
+                        mEvent.photo = name
+                    }
                 }
 
                 //TODO get position
-                event.position = "0"
+                mEvent.position = "0"
 
-                setIntentExtraFromEvent(intent, event)
+                setIntentExtraFromEvent(intent, mEvent)
 
                 setResult(RESULT_OK, intent)
                 return true
@@ -150,18 +189,25 @@ class EditEventActivity : AppCompatActivity() {
         return false
     }
 
-    private fun getPhoto() {
+    private fun choosePhoto() {
 
-        val state = Environment.getExternalStorageState()
-        if (state == Environment.MEDIA_MOUNTED) {
-            val intent = Intent("android.media.action.IMAGE_CAPTURE")
-            startActivityForResult(intent, TAKE_PHOTO)
-        } else {
-            Toast.makeText(this, "sdcard not exist", Toast.LENGTH_SHORT).show()
-        }
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"//相片类型
+        startActivityForResult(intent, REQUEST_CODE_PICK_IMAGE)
+
+    }
+
+    private fun chooseCamera() {
+
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+
+        startActivityForResult(intent, REQUEST_CODE_TAKE_IMAGE)
     }
 
     companion object {
-        const val TAKE_PHOTO = 100
+        const val REQUEST_CODE_PICK_IMAGE = 101
+        const val REQUEST_CODE_TAKE_IMAGE = 102
+
+        const val PERMISSIONS_REQUEST_READ_STORAGE = 6
     }
 }

@@ -176,11 +176,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             //holder.mFeeTextView.text = mListData[position][COLUMN_FEE].toString()
             holder.mCommentView.text = mListData[position][COLUMN_COMMENTS].toString()
 
-            if (mListData[position]["pic"] != "null") {
-                holder.mFaceImageView.clearColorFilter()
-                holder.mFaceImageView.setImageBitmap(mListData[position]["pic"] as Bitmap)
+            val bitmap = readPlayerEventBitmap(applicationContext, mListData[position][COLUMN_NAME].toString())
+            if (bitmap != null) {
+                holder.mFaceImageView.setImageBitmap(bitmap)
             } else {
-                holder.mFaceImageView.setColorFilter(mListData[position]["face"] as Int)
+                holder.mFaceImageView.setImageResource(R.drawable.face)
             }
         }
 
@@ -242,7 +242,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
            while (!c.isAfterLast) {
 
                val map: HashMap<String, Any> = HashMap()
-               setMapFromCursorForPerson(applicationContext, map, c)
+               setMapFromCursorForPerson(map, c)
 
                list.add(map)
 

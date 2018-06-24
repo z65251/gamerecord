@@ -42,7 +42,7 @@ fun setIntentExtraFromPerson(intent: Intent, person: PersonInfo) {
     intent.putExtra(COLUMN_COMMENTS, person.comments)
 }
 
-fun setMapFromCursorForPerson(context: Context, map: HashMap<String, Any>, cursor: Cursor) {
+fun setMapFromCursorForPerson(map: HashMap<String, Any>, cursor: Cursor) {
     /* read all the readable info from table
     |----------------------------------------------------------|
     |_id(int)|time(text)|name(text)|balance(int)|comments(text)|
@@ -58,13 +58,6 @@ fun setMapFromCursorForPerson(context: Context, map: HashMap<String, Any>, curso
 
     //get default face img by name
     map["face"] = getColorIdFromName(map[COLUMN_NAME].toString())
-    val bitmap = readPlayerBitmap(context, map[COLUMN_NAME].toString())
-    if (bitmap != null) {
-        map["pic"] = bitmap
-    } else {
-        map["pic"] = "null"
-    }
-    //map["pic"] = readPlayerBitmap(context, map[COLUMN_NAME].toString()) as Any?
 }
 
 fun createNewPersonValues(person: PersonInfo): ContentValues {
@@ -107,7 +100,7 @@ fun setMapFromCursorForEvent(map: HashMap<String, Any>, cursor: Cursor) {
     map[ID] = cursor.getInt(cursor.getColumnIndex(ID))
     map[COLUMN_TIME] = cursor.getString(cursor.getColumnIndex(COLUMN_TIME))
     map[COLUMN_FEE] = cursor.getInt(cursor.getColumnIndex(COLUMN_FEE)).toString()
-    //map[COLUMN_PHOTO] = cursor.getString(cursor.getColumnIndex(COLUMN_PHOTO))
+    map[COLUMN_PHOTO] = cursor.getString(cursor.getColumnIndex(COLUMN_PHOTO))
     if (cursor.getType(cursor.getColumnIndex(COLUMN_POSITON)) == FIELD_TYPE_NULL) {
         map[COLUMN_POSITON] = ""
     } else {
@@ -271,9 +264,9 @@ fun getTimeList(context: Context): ArrayList<String> {
     return timeList
 }
 
-fun savePlayerBitmap(context: Context, playername: String, bitmap: Bitmap): Int {
+fun savePlayerEventBitmap(context: Context, name: String, bitmap: Bitmap): Int {
 
-    val filepath = context.filesDir.absolutePath + "/" + playername + ".png"
+    val filepath = context.filesDir.absolutePath + "/" + name + ".png"
 
     val file = File(filepath)
     try {
@@ -310,9 +303,9 @@ fun savePlayerBitmap(context: Context, playername: String, bitmap: Bitmap): Int 
     return 0
 }
 
-fun readPlayerBitmap(context: Context, playername: String): Bitmap? {
+fun readPlayerEventBitmap(context: Context, name: String): Bitmap? {
 
-    val filepath = context.filesDir.absolutePath + "/" + playername + ".png"
+    val filepath = context.filesDir.absolutePath + "/" + name + ".png"
 
     var fis: FileInputStream? = null
     try {
@@ -361,9 +354,9 @@ fun getFitSampleBitmap(inputStream: InputStream, width: Int, height: Int): Bitma
 fun readStream(inStream: InputStream): ByteArray? {
     val outStream = ByteArrayOutputStream()
     val buffer = ByteArray(10*1024*1024)
-    var len = 0
+    //var len = 0
 
-    len = inStream.read(buffer)
+    val len = inStream.read(buffer)
     //TODO simple way use 10MB
     if (len > 10*1024*1024) {
         inStream.close()

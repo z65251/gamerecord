@@ -21,6 +21,8 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.app.Activity
+import android.provider.MediaStore
 
 
 class PlayersSettingActivity : AppCompatActivity() {
@@ -56,7 +58,23 @@ class PlayersSettingActivity : AppCompatActivity() {
                         players_settings_recycler_view.adapter?.notifyItemChanged(mCurrentClickPos)
 
                         //save the picture to file
-                        savePlayerBitmap(applicationContext, mPlayerInfoList[mCurrentClickPos].name, bitmap)
+                        savePlayerEventBitmap(applicationContext, mPlayerInfoList[mCurrentClickPos].name, bitmap)
+                    }
+                }
+            }
+
+            REQUEST_CODE_TAKE_IMAGE -> {
+                if (res == Activity.RESULT_OK) {
+
+                    val bundle = intent?.extras
+                    val bitmap = bundle?.get("data") as Bitmap?
+                    if (bitmap != null) {
+                        mPlayerInfoList[mCurrentClickPos].picture = bitmap
+
+                        players_settings_recycler_view.adapter?.notifyItemChanged(mCurrentClickPos)
+
+                        //save the picture to file
+                        savePlayerEventBitmap(applicationContext, mPlayerInfoList[mCurrentClickPos].name, bitmap)
                     }
                 }
             }
@@ -135,6 +153,9 @@ class PlayersSettingActivity : AppCompatActivity() {
 
                 mButton_Camera.setOnClickListener { _ ->
                     Log.d("NormalTextViewHolder", "Camera Button onClick--> position = $layoutPosition")
+                    mCurrentClickPos = layoutPosition
+
+                    chooseCamera()
                 }
             }
         }
@@ -144,7 +165,7 @@ class PlayersSettingActivity : AppCompatActivity() {
         val nameList = getNameList(this)
 
         for (name in nameList) {
-            var bitmap = readPlayerBitmap(applicationContext, name)
+            var bitmap = readPlayerEventBitmap(applicationContext, name)
             val colorId = getColorIdFromName(name)
             val playerinfo = PlayerInfo(name, bitmap, colorId)
             mPlayerInfoList.add(playerinfo)
@@ -159,6 +180,13 @@ class PlayersSettingActivity : AppCompatActivity() {
 
     }
 
+    private fun chooseCamera() {
+
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+
+        startActivityForResult(intent, REQUEST_CODE_TAKE_IMAGE)
+    }
+
     data class PlayerInfo(val name: String, var picture: Bitmap?, val colorId: Int)
 
     companion object {
@@ -166,6 +194,6 @@ class PlayersSettingActivity : AppCompatActivity() {
         const val REQUEST_CODE_TAKE_IMAGE = 102
 
         const val PERMISSIONS_REQUEST_READ_STORAGE = 6
-        const val PERMISSIONS_REQUEST_TAKE_PICTURE = 7
+        //const val PERMISSIONS_REQUEST_TAKE_PICTURE = 7
     }
 }

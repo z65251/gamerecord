@@ -2,6 +2,7 @@ package com.alan.andy.gamerecord
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
@@ -11,6 +12,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import kotlinx.android.synthetic.main.content_view_event.*
 import kotlinx.android.synthetic.main.activity_view_event.*
@@ -77,6 +79,11 @@ class ViewEventActivity : AppCompatActivity() {
             holder.mFeeTextView.text = mListData[position][COLUMN_FEE].toString()
             holder.mCommentView.text = mListData[position][COLUMN_COMMENTS].toString()
 
+            if (mListData[position][COLUMN_PHOTO] != "0") {
+                val bitmap = readPlayerEventBitmap(applicationContext, mListData[position][COLUMN_PHOTO].toString())
+                holder.mPhotoImageView.setImageBitmap(bitmap)
+            }
+
         }
 
         override fun getItemCount(): Int {
@@ -85,7 +92,7 @@ class ViewEventActivity : AppCompatActivity() {
 
         inner class ViewEventViewHolder internal constructor(view: View) : RecyclerView.ViewHolder(view) {
 
-            //var mPhotoImageView: ImageView = view.findViewById(R.id.face)
+            var mPhotoImageView: ImageView = view.findViewById(R.id.photo)
             var mTimeTextView: TextView = view.findViewById(R.id.time)
             var mFeeTextView: TextView = view.findViewById(R.id.fee)
             //var mPositonTextView: TextView = view.findViewById(R.id.position)
